@@ -1,0 +1,29 @@
+{
+  "name": "m-steamapi",
+  "version": "1.0.0",
+  "description": "This package allows you to access Steam web api data easily.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m1DevProjects/m-SteamAPI.git"
+  },
+  "keywords": [
+    "steam",
+    "api",
+    "dev",
+    "web",
+    "api"
+  ],
+  "author": "m.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/m1DevProjects/m-SteamAPI/issues"
+  },
+  "homepage": "https://github.com/m1DevProjects/m-SteamAPI#readme",
+  "dependencies": {
+    "axios": "^1.1.3"
+  }
+}
