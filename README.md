@@ -2,7 +2,7 @@
 ## This package allows you to access Steam web api data easily.
 
 ### Initialization example:
-```
+```js
 const steamAPI = require('@__mdev/m-steamapi');
 const api = new steamAPI({
     apiKey: YOUR_STEAM_API_KEY
