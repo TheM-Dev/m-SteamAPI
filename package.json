@@ -1,6 +1,6 @@
 {
   "name": "@__mdev/m-steamapi",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "This package allows you to access Steam web api data easily.",
   "main": "index.js",
   "scripts": {
