@@ -1,9 +1,9 @@
-const axios = require('axios');
 const urls = require('./urls');
 
 module.exports = function(apiKey){
 
     this.get = (url) => fetch(url).then(res => res.json()).catch(err => err);
+    this.throwErr = (modules) => new Error(`Error when attempted to retrieve data from API. Function: ${module}`);
 
     /**
      * @name                  getPlayerCount
@@ -15,7 +15,7 @@ module.exports = function(apiKey){
      */
     this.getPlayerCount = async appID => 
         get(urls.getPlayerCount(apiKey, appID))
-            .catch(error => new Error(`Error when attempted to retrieve data from API. Function: getPlayerCount`));
+            .catch(error => this.throwErr('getPlayerCount'));
 
     /**
      * @name                  getPlayerSummaries
@@ -25,11 +25,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Object}
      */
-    this.getPlayerSummaries = async steamID => {
-        return await axios.get(urls.getPlayerSummaries(apiKey, steamID)).then((response) => {
-            return response.data.response.players[0];
-        }).catch((err) => { return err; });
-    }
+    this.getPlayerSummaries = async steamID => 
+        get(urls.getPlayerSummaries(apiKey, steamID))
+            .catch(error => this.throwErr('getPlayerSummaries'));
 
     /**
      * @name                  getUserGroups
@@ -39,12 +37,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Array}
      */
-    this.getUserGroups = async steamID => {
-        return await axios.get(urls.getUserGroups(apiKey, steamID)).then((response) => {
-            let groups = []; response.data.response.groups.forEach((group) => { groups.push(group.gid); });
-            return groups;
-        }).catch((err) => { return err; });
-    }
+    this.getUserGroups = async steamID => 
+        get(urls.getUserGroups(apiKey, steamID))
+            .catch(error => this.throwErr('getUserGroups'));
 
     /**
      * @name                  resolveVanityUrl
@@ -54,12 +49,9 @@ module.exports = function(apiKey){
      * 
      * @returns {String}
      */
-    this.resolveVanityUrl = async vanityURL => {
-        return await axios.get(urls.resolveVanityUrl(apiKey, vanityURL)).then((response) => {
-            if(response.data.response.success) return response.data.response.steamid;
-            return `Couldn't find SteamID for specified VanityURL!`
-        }).catch((err) => { return err; });
-    }
+    this.resolveVanityUrl = async vanityURL => 
+        get(urls.resolveVanityUrl(apiKey, vanityURL))
+            .catch(error => this.throwErr('resolveVanityUrl'));
 
     /**
      * @name                  getUserBans
@@ -69,18 +61,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Object}
      */
-    this.getUserBans = async steamID => {
-        return await axios.get(urls.getUserBans(apiKey, steamID)).then((response) => {
-            return {
-                communityBanned: response.data.players[0].CommunityBanned,
-                economyBanned: response.data.players[0].EconomyBan,
-                vacBanned: response.data.players[0].VACBanned,
-                numberOfVacBans: response.data.players[0].NumberOfVACBans,
-                sinceLastBan: response.data.players[0].DaysSinceLastBan,
-                numberOfGameBans: response.data.players[0].NumberOfGameBans,
-            }
-        }).catch((err) => { return err; });
-    }
+    this.getUserBans = async steamID => 
+        get(urls.getUserBans(apiKey, steamID))
+            .catch(error => this.throwErr('getUserBans'));
 
     /**
      * @name                  getGameAchievements
@@ -90,23 +73,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Array}
      */
-    this.getGameAchievements = async appID => {
-        return await axios.get(urls.getGameAchievements(apiKey, appID)).then((response) => {
-            let achievements = [];
-            response.data.game.availableGameStats.achievements.forEach((game) => {
-                let { displayName, description, icon, icongray, hidden } = game;
-                if(hidden===0) hidden = false; if(hidden===1) hidden = true;
-                achievements.push({
-                    name: displayName,
-                    description,
-                    icon,
-                    icongray,
-                    hidden
-                })
-            })
-            return achievements;
-        }).catch((err) => { return err; });
-    }
+    this.getGameAchievements = async appID => 
+        get(urls.getGameAchievements(apiKey, appID))
+            .catch(error => this.throwErr('getGameAchievements'));
 
     /**
      * @name                  getUserStatsForGame
@@ -117,11 +86,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Array}
      */
-    this.getUserStatsForGame = async (steamID, appID) => {
-        return await axios.get(urls.getUserStatsForGame(apiKey, steamID, appID)).then((response) => {
-            return response.data.playerstats.stats;
-        }).catch((err) => { return err; });
-    }
+    this.getUserStatsForGame = async (steamID, appID) => 
+        get(urls.getUserStatsForGame(apiKey, steamID, appID))
+            .catch(error => this.throwErr('getUserStatsForGame'));
 
     /**
      * @name                  getSteamGames
@@ -130,11 +97,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Array}
      */
-    this.getSteamGames = async () => {
-        return await axios.get(urls.getSteamGames(apiKey)).then((response) => {
-            return response.data.response.apps;
-        }).catch((err) => { return err; });
-    }
+    this.getSteamGames = async () =>
+        get(urls.getSteamGames(apiKey))
+            .catch(error => this.throwErr('getSteamGames'));
 
     /**
      * @name                  getSteamSoftware
@@ -143,11 +108,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Array}
      */
-    this.getSteamSoftware = async () => {
-        return await axios.get(urls.getSteamSoftware(apiKey)).then((response) => {
-            return response.data.response.apps;
-        }).catch((err) => { return err; });
-    }
+    this.getSteamSoftware = async () =>
+        get(urls.getSteamSoftware(apiKey))
+            .catch(error => this.throwErr('getSteamSoftware'));
 
     /**
      * @name                  getUserBadges
@@ -157,11 +120,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Array}
      */
-    this.getUserBadges = async steamID => {
-        return await axios.get(urls.getUserBadges(apiKey, steamID)).then((response) => {
-            return response.data.response.badges;
-        }).catch((err) => { return err; });
-    }
+    this.getUserBadges = async steamID =>
+        get(urls.getUserBadges(apiKey, steamID))
+            .catch(error => this.throwErr('getUserBadges'));
 
     /**
      * @name                  getUserCommunityBadgeProgress
@@ -171,11 +132,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Array}
      */
-    this.getUserCommunityBadgeProgress = async steamID => {
-        return await axios.get(urls.getUserCommunityBadgeProgress(apiKey, steamID)).then((response) => {
-            return response.data.response.quests;
-        }).catch((err) => { return err; });
-    }
+    this.getUserCommunityBadgeProgress = async steamID =>
+        get(urls.getUserCommunityBadgeProgress(apiKey, steamID))
+            .catch(error => this.throwErr('getUserCommunityBadgeProgress'));
 
     /**
      * @name                  getUserDisplayedBadge
@@ -185,11 +144,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Object}
      */
-    this.getUserDisplayedBadge = async steamID => {
-        return await axios.get(urls.getUserDisplayedBadge(apiKey, steamID)).then((response) => {
-            return response.data.response;
-        }).catch((err) => { return err; });
-    }
+    this.getUserDisplayedBadge = async steamID =>
+        get(urls.getUserDisplayedBadge(apiKey, steamID))
+            .catch(error => this.throwErr('getUserDisplayedBadge'));
 
     /**
      * @name                  getUserGames
@@ -199,14 +156,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Object}
      */
-    this.getUserGames = async steamID => {
-        return await axios.get(urls.getUserGames(apiKey, steamID)).then((response) => {
-            return {
-                gameCount: response.data.response.game_count,
-                games: response.data.response.games
-            }
-        }).catch((err) => { return err; });
-    }
+    this.getUserGames = async steamID =>
+        get(urls.getUserGames(apiKey, steamID))
+            .catch(error => this.throwErr('getUserGames'));
 
     /**
      * @name                  getUserCustomizationDetails
@@ -216,11 +168,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Object}
      */
-    this.getUserCustomizationDetails = async steamID => {
-        return await axios.get(urls.getUserCustomizationDetails(apiKey, steamID)).then((response) => {
-            return response.data.response.customizations;
-        }).catch((err) => { return err; });
-    }
+    this.getUserCustomizationDetails = async steamID =>
+        get(urls.getUserCustomizationDetails(apiKey, steamID))
+            .catch(error => this.throwErr('getUserCustomizationDetails'));
 
     /**
      * @name                  getUserProfileItemsEquipped
@@ -230,54 +180,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Object}
      */
-    this.getUserProfileItemsEquipped = async steamID => {
-        return await axios.get(urls.getUserProfileItemsEquipped(apiKey, steamID)).then((response) => {
-            return {
-                profileBackground: {
-                    itemName: response.data.response.profile_background.name,
-                    itemDescription: response.data.response.profile_background.item_description,
-                    imageUrl: `http://media.steampowered.com/steamcommunity/public/images/${response.data.response.profile_background.image_large}`,
-                    itemId: response.data.response.profile_background.communityitemid,
-                    appId: response.data.response.profile_background.appid
-                },
-                miniProfileBackground: {
-                    itemName: response.data.response.mini_profile_background.name,
-                    itemDescription: response.data.response.mini_profile_background.item_description,
-                    imageUrl: `http://media.steampowered.com/steamcommunity/public/images/${response.data.response.mini_profile_background.image_large}`,
-                    itemId: response.data.response.mini_profile_background.communityitemid,
-                    appId: response.data.response.mini_profile_background.appid
-                },
-                avatarFrame: {
-                    itemName: response.data.response.avatar_frame.name,
-                    itemDescription: response.data.response.avatar_frame.item_description,
-                    imageUrl: `http://media.steampowered.com/steamcommunity/public/images/${response.data.response.avatar_frame.image_large}`,
-                    itemId: response.data.response.avatar_frame.communityitemid,
-                    appId: response.data.response.avatar_frame.appid
-                },
-                animatedAvatar: {
-                    itemName: response.data.response.animated_avatar.name,
-                    itemDescription: response.data.response.animated_avatar.item_description,
-                    imageUrl: `http://media.steampowered.com/steamcommunity/public/images/${response.data.response.animated_avatar.image_large}`,
-                    itemId: response.data.response.animated_avatar.communityitemid,
-                    appId: response.data.response.animated_avatar.appid
-                },
-                profileModifier: {
-                    itemName: response.data.response.profile_modifier.name,
-                    itemDescription: response.data.response.profile_modifier.item_description,
-                    imageUrl: `http://media.steampowered.com/steamcommunity/public/images/${response.data.response.profile_modifier.image_large}`,
-                    itemId: response.data.response.profile_modifier.communityitemid,
-                    appId: response.data.response.profile_modifier.appid
-                },
-                steamDeckKeyboardSkin: {
-                    itemName: response.data.response.steam_deck_keyboard_skin.name,
-                    itemDescription: response.data.response.steam_deck_keyboard_skin.item_description,
-                    imageUrl: `http://media.steampowered.com/steamcommunity/public/images/${response.data.response.steam_deck_keyboard_skin.image_large}`,
-                    itemId: response.data.response.steam_deck_keyboard_skin.communityitemid,
-                    appId: response.data.response.steam_deck_keyboard_skin.appid
-                }
-            }
-        }).catch((err) => { return err; });
-    }
+    this.getUserProfileItemsEquipped = async steamID =>
+        get(urls.getUserProfileItemsEquipped(apiKey, steamID))
+            .catch(error => this.throwErr('getUserProfileItemsEquipped'));
 
     /**
      * @name                  getUserRecentlyPlayedGames
@@ -287,14 +192,9 @@ module.exports = function(apiKey){
      * 
      * @returns {Object}
      */
-    this.getUserRecentlyPlayedGames = async steamID => {
-        return await axios.get(urls.getUserRecentlyPlayedGames(apiKey, steamID)).then((response) => {
-            return {
-                gameCount: response.data.response.total_count,
-                games: response.data.response.games
-            }
-        }).catch((err) => { return err; });
-    }
+    this.getUserRecentlyPlayedGames = async steamID =>
+        get(urls.getUserRecentlyPlayedGames(apiKey, steamID))
+            .catch(error => this.throwErr('getUserRecentlyPlayedGames'));
 
     /**
      * @name                  getUserLevel
@@ -304,11 +204,9 @@ module.exports = function(apiKey){
      * 
      * @returns {String}
      */
-    this.getUserLevel = async steamID => {
-        return await axios.get(urls.getUserLevel(apiKey, steamID)).then((response) => {
-            return response.data.response.player_level;
-        }).catch((err) => { return err; });
-    }
+    this.getUserLevel = async steamID =>
+        get(urls.getUserLevel(apiKey, steamID))
+            .catch(error => this.throwErr('getUserLevel'));
 
     /**
      * @name                  getLevelDistribution
@@ -318,11 +216,9 @@ module.exports = function(apiKey){
      * 
      * @returns {String}
      */
-    this.getLevelDistribution = async playerLevel => {
-        return await axios.get(urls.getLevelDistribution(apiKey, playerLevel)).then((response) => {
-            return response.data.response.player_level_percentile;
-        }).catch((err) => { return err; });
-    }
+    this.getLevelDistribution = async playerLevel =>
+        get(urls.getLevelDistribution(apiKey, playerLevel))
+            .catch(error => this.throwErr('getLevelDistribution'));
 
     /**
      * @name                  getAppNews
@@ -332,11 +228,9 @@ module.exports = function(apiKey){
      * 
      * @returns {String}
      */
-    this.getAppNews = async appID => {
-        return await axios.get(urls.getAppNews(apiKey, appID)).then((response) => {
-            return response.data.appnews.newsitems;
-        }).catch((err) => { return err; });
-    }
+    this.getAppNews = async appID =>
+        get(urls.getAppNews(apiKey, appID))
+            .catch(error => this.throwErr('getAppNews'));
 
     /**
      * @name                  getInventory
@@ -349,7 +243,7 @@ module.exports = function(apiKey){
      */
     this.getInventory = async (appID, steamID) => {
         const items = [];
-        await axios.get(urls.getInventory(appID, steamID))
+        await this.get(urls.getInventory(appID, steamID))
             .then(function (response) {
                 response.data.descriptions.forEach(item => {
                     const { market_name, appid, actions, icon_url_large, tradable, marketable, tags, name_color, type } = item;
@@ -368,10 +262,7 @@ module.exports = function(apiKey){
                     })
                 })
             })
-            .catch(function (error) {
-                return error;
-            })
-            .finally(function () {});
+            .catch(err => this.throwErr(`InventoryAPI`));
         return items;
     }
 }
