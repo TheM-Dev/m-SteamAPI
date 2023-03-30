@@ -4,9 +4,7 @@
 ### Initialization example:
 ```js
 const steamAPI = require('@__mdev/m-steamapi');
-const api = new steamAPI({
-    apiKey: YOUR_STEAM_API_KEY
-});
+const api = new steamAPI("YOUR_STEAM_API_KEY");
 await api.getPlayerCount(APPID);
 ```
 
